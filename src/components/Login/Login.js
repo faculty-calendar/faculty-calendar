@@ -87,7 +87,6 @@ function Login() {
         </span>
       </p>
       <p>
-        Sign in with Google?{" "}
         <span>
           <button disabled={submitButtonDisabled} onClick={handleGoogleSignIn}>
             Sign in with Google
