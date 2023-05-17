@@ -11,6 +11,7 @@ import { db } from "./firebase";
 import "./App1.css";
 import Navbar from "./components/Navbar";
 import Modal from "./components/Modal"
+import { createEvents } from "ics";
 //import { db1 } from "./firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 const locales = {
@@ -118,6 +119,70 @@ function App({ userId }) {
     }
   };
   
+  async function handleExport() {
+    console.log("handleExport called");
+    // Fetch events for logged-in user from database
+    const userEventsCollection = collection(db, "events");
+    const querySnapshot = await getDocs(
+      query(userEventsCollection, where("userId", "==", userId))
+    );
+    const fetchedEvents = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  
+    const events = fetchedEvents.map((event) => {
+      // Parse start and end date strings into Date objects
+      const startDate = parseISO(event.start);
+      const endDate = parseISO(event.end);
+    
+      // Extract date and time components from Date objects
+      const startArray = [
+        startDate.getFullYear(),
+        startDate.getMonth() + 1,
+        startDate.getDate(),
+        startDate.getHours(),
+        startDate.getMinutes(),
+      ];
+      const endArray = [
+        endDate.getFullYear(),
+        endDate.getMonth() + 1,
+        endDate.getDate(),
+        endDate.getHours(),
+        endDate.getMinutes(),
+      ];
+    
+      return {
+        title: event.title,
+        start: startArray,
+        end: endArray,
+      };
+    });
+    // Log the values of the event objects
+    console.log(events);
+    // Generate iCalendar file for download
+    const { error, value } = createEvents(events);
+  
+    if (error) {
+      console.error("Error creating events:", error);
+      return;
+    }
+  
+    const fileContent = value;
+  
+    // Create a Blob with the file content
+    const blob = new Blob([fileContent], {
+      type: "text/calendar;charset=utf-8",
+    });
+  
+    // Create a download link element
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "calendar.ics";
+  
+    // Trigger a click event on the link to start the download
+    link.click();
+  }
   
   
   
@@ -126,7 +191,7 @@ function App({ userId }) {
   return (
     <div className="App" style={{backgroundColor: "#F8F4E3", height: "100%",minHeight: "100vh"}}>
       <React.Fragment>
-        <Navbar />
+        <Navbar onExport={handleExport} />
       </React.Fragment>
       <h1 style={{ textAlign: "center" }}>
         Welcome - {userId}

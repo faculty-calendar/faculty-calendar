@@ -23,7 +23,17 @@ header{
     color: var(--textColor);
 
 }
-
+.export-btn {
+    background-color: var(--mainColor);
+    color: var(--textColor);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: auto;
+    font-size: 20px;
+  }
+  
 nav a{
     margin: 0 2rem;
     color: var(--textColor);
