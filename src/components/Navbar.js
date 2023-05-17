@@ -9,7 +9,6 @@ function Navbar({ onExport }) {
   return (
     <div>
         <header>
-            <h3></h3>
             <nav ref={navRef}>
                 <a href="/#" style={{fontSize: 25}}>Home</a>
                 <a href="/#" style={{fontSize: 25}}>Schedule</a>

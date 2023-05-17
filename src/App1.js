@@ -10,9 +10,7 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase";
 import "./App1.css";
 import Navbar from "./components/Navbar";
-import Modal from "./components/Modal"
 import { createEvents } from "ics";
-//import { db1 } from "./firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
@@ -35,8 +33,6 @@ function App({ userId }) {
     color: "",
   });
   const [allEvents, setAllEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  //const [openModal, setOPeration] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
