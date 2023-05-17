@@ -2,7 +2,7 @@
   height: 100%;
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(to right, #9900ff, #cc80ff);
+  background: linear-gradient(to right, #29335c, #29335c);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,7 +37,7 @@
 .footer button {
   outline: none;
   border: none;
-  background-color: #9900ff;
+  background-color: #29335c;
   color: #fff;
   border-radius: 5px;
   font-weight: bold;
@@ -53,7 +53,7 @@
 }
 
 .footer button:hover {
-  background-color: #aa2aff;
+  background-color: #29335c;
 }
 
 .footer p {
@@ -63,7 +63,7 @@
 
 .footer p span a {
   font-weight: bold;
-  color: #9900ff;
+  color: #29335c;
   letter-spacing: 1px;
   font-size: 1rem;
   text-decoration: none;

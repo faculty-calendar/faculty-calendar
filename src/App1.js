@@ -329,7 +329,7 @@ function App({ userId }) {
     </div>
 
     <div className="form-row">
-      <button style={{ marginTop: "20px" , marginBottom:"40px",color:"black"}} onClick={handleAddEvent}>
+      <button style={{ marginTop: "20px" , marginBottom:"40px",color:"white"}} onClick={handleAddEvent}>
         Add Event
       </button>
     </div>

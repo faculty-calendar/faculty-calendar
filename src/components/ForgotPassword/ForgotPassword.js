@@ -42,9 +42,10 @@ function ForgotPassword() {
             placeholder="Enter email address"
             required
           />
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} className={styles.loginButton}>
             Reset Password
           </button>
+
         </form>
         <div className={styles.footer}>
           <p>

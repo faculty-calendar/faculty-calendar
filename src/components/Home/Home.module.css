@@ -2,7 +2,7 @@
     height: 100%;
     min-height: 100vh;
     width: 100%;
-    background: linear-gradient(to right, #9900ff, #cc80ff);
+    background: linear-gradient(to right, #29335c, #29335c);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,7 +37,7 @@
   .footer button {
     outline: none;
     border: none;
-    background-color: #9900ff;
+    background-color: #29335c;
     color: #fff;
     border-radius: 5px;
     font-weight: bold;
@@ -53,7 +53,7 @@
   }
   
   .footer button:hover {
-    background-color: #aa2aff;
+    background-color: #29335c;
   }
   
   .footer p {
@@ -63,7 +63,7 @@
   
   .footer p span a {
     font-weight: bold;
-    color: #9900ff;
+    color: #29335c;
     letter-spacing: 1px;
     font-size: 1rem;
     text-decoration: none;
@@ -82,7 +82,28 @@
   height: 550px;
   width: 35%;
   box-shadow: 11px 12px 13px 12px rgb(207,207,207) ;
-  padding-top: 30px;
+  padding-top: 3px;
   border-radius: 60px;
   background-color: white;
+}
+
+.loginContainer button,
+.signupLink button {
+  border: 3px solid #dddddd;
+  outline: none;
+  padding: 1px 15px;
+  font-size: 18px;
+  background-color: white;
+  color: black;
+}
+
+.loginContainer button:hover,
+.signupLink button:hover {
+  border-color: #29335c;
+}
+
+.loginContainer button:focus,
+.signupLink button:focus {
+  border-color: #29335c;
+  outline: none;
 }

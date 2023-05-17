@@ -87,9 +87,10 @@ tr:hover {
 
 button {
   margin-top: 10px;
-  background-color: white;
+  background-color: #29335c;
   color: #fff;
-  border: solid black;
+  border-radius: 5px;
+  /* border: solid black; */
   padding: 10px 20px;
   cursor: pointer;
 }
