@@ -25,7 +25,8 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-function App({ userId }) {
+function App() {
+  const userId = auth.currentUser ? auth.currentUser.uid : null;
   const [allEvents, setAllEvents] = useState([]);
   const user = auth.currentUser;
 
