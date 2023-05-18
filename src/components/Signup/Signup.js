@@ -14,12 +14,17 @@ function Signup() {
     email: "",
     pass: "",
   });
+  const [confirmPass, setConfirmPass] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
 
   const handleSubmission = () => {
-    if (!values.name || !values.email || !values.pass) {
+    if (!values.name || !values.email || !values.pass || !confirmPass) {
       setErrorMsg("Fill all fields");
+      return;
+    }
+    if (values.pass !== confirmPass) {
+      setErrorMsg("Passwords do not match");
       return;
     }
     setErrorMsg("");
@@ -62,9 +67,16 @@ function Signup() {
         <InputControl
           label="Password"
           placeholder="Enter password"
+          type="password"
           onChange={(event) =>
             setValues((prev) => ({ ...prev, pass: event.target.value }))
           }
+        />
+        <InputControl
+          label="Confirm Password"
+          placeholder="Confirm password"
+          type="password"
+          onChange={(event) => setConfirmPass(event.target.value)}
         />
 
         <div className={styles.footer}>
