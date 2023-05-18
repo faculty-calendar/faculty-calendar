@@ -12,6 +12,15 @@ import Navbar from "./components/Navbar";
 import { createEvents } from "ics";
 import { doc, deleteDoc } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
+import HandleDrawer from "./components/Drawer/HandleDrawer"; // Add import for HandleDrawer component
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from "@mui/material"; // Add imports for Material-UI Dialog and Button components
 
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
@@ -28,6 +37,9 @@ const localizer = dateFnsLocalizer({
 function App() {
   const userId = auth.currentUser ? auth.currentUser.uid : null;
   const [allEvents, setAllEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null); // Add state variable for selected event
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // Add state variable for dialog open state
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Add state variable for drawer open state
   const user = auth.currentUser;
 
   useEffect(() => {
@@ -48,18 +60,20 @@ function App() {
 
   const handleRemoveEvent = (event) => {
     const r = window.confirm("Would you like to remove this event?");
-
+  
     if (r === true) {
       deleteDoc(doc(db, "events", event.id))
         .then(() => {
           const updatedEvents = allEvents.filter((e) => e.id !== event.id);
           setAllEvents(updatedEvents);
+          setIsDialogOpen(false); // Add this line to close the dialog
         })
         .catch((error) => {
           console.error("Error removing event:", error);
         });
     }
   };
+  
 
   async function handleExport() {
     console.log("handleExport called");
@@ -152,34 +166,48 @@ function App() {
                 backgroundColor: event.color,
               },
             })}
-            components={{
-              month: {
-                event: ({ event }) => (
-                  <div
-                    className="rbc-event"
-                    onClick={() => handleRemoveEvent(event)} // Add the onClick handler for event deletion
-                  >
-                    {event.title}
-                  </div>
-                ),
-              },
+            onSelectEvent={(event) => {
+              setSelectedEvent(event); // Set the selected event when an event is clicked
+              setIsDialogOpen(true); // Open the dialog when an event is clicked
             }}
           />
         </div>
-        <div className="events-list">
-          <h2>Events</h2>
-          <table style={{ marginBottom: "10px", marginRight: "20px", width: "90%", columnWidth: "180px", border: "solid" }}>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {allEvents.map((event) => {
-                let formattedStart = "";
-                let formattedEnd = "";
+      
+       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+         <DialogTitle>Event Options</DialogTitle>
+         <DialogContent>
+           <DialogContentText>
+             Would you like to remove or update this event?
+           </DialogContentText>
+         </DialogContent>
+         <DialogActions>
+           <Button onClick={() => handleRemoveEvent(selectedEvent)}>
+             Remove Event
+           </Button>
+           <Button onClick={() => {
+             setIsDialogOpen(false);
+             setIsDrawerOpen(true);
+           }}>
+             Update Event
+           </Button>
+         </DialogActions>
+       </Dialog>
+
+       <HandleDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} selectedEvent={selectedEvent} userId={userId} />
+       <div className="events-list">
+        <h2>Events</h2>
+        <table style={{ marginBottom: "10px", marginRight: "20px", width: "90%", columnWidth: "180px", border: "solid" }}>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allEvents.map((event) => {
+              let formattedStart = "";
+              let formattedEnd = "";
 
                 try {
                   const parsedStart = parseISO(event.start);
