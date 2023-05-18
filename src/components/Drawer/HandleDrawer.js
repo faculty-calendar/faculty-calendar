@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Add useCallback to the imports
 import { Drawer } from '@mui/material';
 import EventForm from '../EventForm/EventForm.js';
-import { collection, addDoc, getDocs, query, where, doc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase';
 import '../../App1.css';
 
@@ -18,8 +18,8 @@ function HandleDrawer({ open, onClose, userId }) {
   });
   const [allEvents, setAllEvents] = useState([]);
 
-  // Define fetchData function outside of useEffect
-  const fetchData = async () => {
+  // Define fetchData function outside of useEffect and wrap it in useCallback
+  const fetchData = useCallback(async () => {
     const userEventsCollection = collection(db, 'events');
     const querySnapshot = await getDocs(query(userEventsCollection, where('userId', '==', userId)));
     const fetchedEvents = querySnapshot.docs.map((doc) => ({
@@ -28,13 +28,13 @@ function HandleDrawer({ open, onClose, userId }) {
     }));
     console.log('fetchedEvents:', fetchedEvents); // Log the value of fetchedEvents
     setAllEvents(fetchedEvents);
-  };
+  }, [userId]);
 
   useEffect(() => {
     if (userId) {
       fetchData();
     }
-  }, [userId]);
+  }, [userId, fetchData]);
 
   // Function to handle adding a new event
   const handleAddEvent = () => {

@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase";
 import "./App1.css";
 import Navbar from "./components/Navbar";
@@ -23,14 +23,6 @@ const localizer = dateFnsLocalizer({
 });
 
 function App({ userId }) {
-  const [newEvent, setNewEvent] = useState({
-    title: "",
-    startDate: null,
-    startTime: null,
-    endDate: null,
-    endTime: null,
-    color: "",
-  });
   const [allEvents, setAllEvents] = useState([]);
 
   useEffect(() => {
@@ -65,7 +57,7 @@ function App({ userId }) {
         });
     }
   };
-  
+
   async function handleExport() {
     console.log("handleExport called");
     // Fetch events for logged-in user from database
@@ -77,12 +69,12 @@ function App({ userId }) {
       id: doc.id,
       ...doc.data(),
     }));
-  
+
     const events = fetchedEvents.map((event) => {
       // Parse start and end date strings into Date objects
       const startDate = parseISO(event.start);
       const endDate = parseISO(event.end);
-    
+
       // Extract date and time components from Date objects
       const startArray = [
         startDate.getFullYear(),
@@ -98,7 +90,7 @@ function App({ userId }) {
         endDate.getHours(),
         endDate.getMinutes(),
       ];
-    
+
       return {
         title: event.title,
         start: startArray,
@@ -109,50 +101,53 @@ function App({ userId }) {
     console.log(events);
     // Generate iCalendar file for download
     const { error, value } = createEvents(events);
-  
+
     if (error) {
       console.error("Error creating events:", error);
       return;
     }
-  
+
     const fileContent = value;
-  
+
     // Create a Blob with the file content
     const blob = new Blob([fileContent], {
       type: "text/calendar;charset=utf-8",
     });
-  
+
     // Create a download link element
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "calendar.ics";
-  
+
     // Trigger a click event on the link to start the download
     link.click();
   }
-  
-  
-  
-  
 
   return (
-    <div className="App" style={{backgroundColor: "#F8F4E3", height: "100%",minHeight: "100vh"}}>
+    <div
+      className="App"
+      style={{ backgroundColor: "#F8F4E3", height: "100%", minHeight: "100vh" }}
+    >
       <React.Fragment>
         <Navbar onExport={handleExport} />
       </React.Fragment>
-      <h1 style={{ textAlign: "center" }}>
-        Welcome - {userId}
-      </h1>
+      <h1 style={{ textAlign: "center" }}>Welcome - {userId}</h1>
 
       <div className="calendar-container">
-        <div className="calendar" style={{marginTop: "20px", merginLeft: "100px"}}>
+        <div className="calendar" style={{ marginTop: "20px", merginLeft: "100px" }}>
           <Calendar
             localizer={localizer}
             events={allEvents}
             startAccessor={(event) => new Date(event.start)}
-            //onSelectEvent   = {handleRemoveEvent} 
             endAccessor={(event) => new Date(event.end)}
-            style={{ height: 500 , backgroundColor:"white", padding: "20px 20px 20px 20px",marginLeft: "20px",  boxShadow: '9px 10px 11px 10px rgba(238, 230, 207,1)', borderRadius: "30px" }}
+            style={{
+              height: 500,
+              backgroundColor: "white",
+              padding: "20px 20px 20px 20px",
+              marginLeft: "20px",
+              boxShadow: '9px 10px 11px 10px rgba(238, 230, 207,1)',
+              borderRadius: "30px",
+            }}
             eventPropGetter={(event) => ({
               className: event.className,
               style: {
@@ -173,48 +168,45 @@ function App({ userId }) {
             }}
           />
         </div>
-      
-  </div>
-  <div className="events-list" >
-    <h2>Events</h2>
-    <table style={{marginBottom: "0px",marginLeft:"500px", marginRight: "500px",width: "50%", columnWidth: "180px",border: "solid"}}>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {allEvents.map((event) => {
-          let formattedStart = "";
-          let formattedEnd = "";
-
-          try {
-            const parsedStart = parseISO(event.start);
-            const parsedEnd = parseISO(event.end);
-            formattedStart = format(parsedStart, "yyyy-MM-dd HH:mm");
-            formattedEnd = format(parsedEnd, "yyyy-MM-dd HH:mm");
-          } catch (error) {
-            console.error("Error parsing time:", error);
-          }
-
-          return (
-            <tr key={event.id}>
-              <td>{event.title}</td>
-              <td>
-                {formattedStart ? formattedStart : "Invalid start time"}
-              </td>
-              <td>{formattedEnd ? formattedEnd : "Invalid end time"}</td>
+        
+      </div>
+      <div className="events-list">
+        <h2>Events</h2>
+        <table style={{ marginBottom: "0px", marginLeft: "500px", marginRight: "500px", width: "50%", columnWidth: "180px", border: "solid" }}>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Start Date</th>
+              <th>End Date</th>
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  </div>
-</div>
-);
+          </thead>
+          <tbody>
+            {allEvents.map((event) => {
+              let formattedStart = "";
+              let formattedEnd = "";
+
+              try {
+                const parsedStart = parseISO(event.start);
+                const parsedEnd = parseISO(event.end);
+                formattedStart = format(parsedStart, "yyyy-MM-dd HH:mm");
+                formattedEnd = format(parsedEnd, "yyyy-MM-dd HH:mm");
+              } catch (error) {
+                console.error("Error parsing time:", error);
+              }
+
+              return (
+                <tr key={event.id}>
+                  <td>{event.title}</td>
+                  <td>{formattedStart ? formattedStart : "Invalid start time"}</td>
+                  <td>{formattedEnd ? formattedEnd : "Invalid end time"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
 
 export default App;
-              
