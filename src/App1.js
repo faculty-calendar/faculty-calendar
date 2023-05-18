@@ -11,6 +11,16 @@ import "./App1.css";
 import Navbar from "./components/Navbar";
 import { createEvents } from "ics";
 import { doc, deleteDoc } from "firebase/firestore";
+import HandleDrawer from "./components/Drawer/HandleDrawer"; // Add import for HandleDrawer component
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from "@mui/material"; // Add imports for Material-UI Dialog and Button components
+
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
 };
@@ -24,6 +34,9 @@ const localizer = dateFnsLocalizer({
 
 function App({ userId }) {
   const [allEvents, setAllEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null); // Add state variable for selected event
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // Add state variable for dialog open state
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Add state variable for drawer open state
   const user = auth.currentUser;
 
   useEffect(() => {
@@ -46,18 +59,20 @@ function App({ userId }) {
 
   const handleRemoveEvent = (event) => {
     const r = window.confirm("Would you like to remove this event?");
-
+  
     if (r === true) {
       deleteDoc(doc(db, "events", event.id))
         .then(() => {
           const updatedEvents = allEvents.filter((e) => e.id !== event.id);
           setAllEvents(updatedEvents);
+          setIsDialogOpen(false); // Add this line to close the dialog
         })
         .catch((error) => {
           console.error("Error removing event:", error);
         });
     }
   };
+  
 
   async function handleExport() {
     console.log("handleExport called");
@@ -127,14 +142,24 @@ function App({ userId }) {
   return (
     <div
       className="App"
-      style={{ backgroundColor: "#F8F4E3", height: "100%", minHeight: "100vh" }}
+      style={{
+        backgroundColor: "#F8F4E3",
+        height: "100%",
+        minHeight: "100vh",
+      }}
     >
       <React.Fragment>
         <Navbar user={user} onExport={handleExport} />
       </React.Fragment>
 
       <div className="calendar-container">
-        <div className="calendar" style={{ marginTop: "20px", merginLeft: "100px" }}>
+        <div
+          className="calendar"
+          style={{
+            marginTop: "20px",
+            merginLeft: "100px",
+          }}
+        >
           <Calendar
             localizer={localizer}
             events={allEvents}
@@ -154,23 +179,37 @@ function App({ userId }) {
                 backgroundColor: event.color,
               },
             })}
-            components={{
-              month: {
-                event: ({ event }) => (
-                  <div
-                    className="rbc-event"
-                    onClick={() => handleRemoveEvent(event)} // Add the onClick handler for event deletion
-                  >
-                    {event.title}
-                  </div>
-                ),
-              },
+            onSelectEvent={(event) => {
+              setSelectedEvent(event); // Set the selected event when an event is clicked
+              setIsDialogOpen(true); // Open the dialog when an event is clicked
             }}
           />
         </div>
         
       </div>
-      <div className="events-list">
+      
+       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+         <DialogTitle>Event Options</DialogTitle>
+         <DialogContent>
+           <DialogContentText>
+             Would you like to remove or update this event?
+           </DialogContentText>
+         </DialogContent>
+         <DialogActions>
+           <Button onClick={() => handleRemoveEvent(selectedEvent)}>
+             Remove Event
+           </Button>
+           <Button onClick={() => {
+             setIsDialogOpen(false);
+             setIsDrawerOpen(true);
+           }}>
+             Update Event
+           </Button>
+         </DialogActions>
+       </Dialog>
+
+       <HandleDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} selectedEvent={selectedEvent} userId={userId} />
+       <div className="events-list">
         <h2>Events</h2>
         <table style={{ marginBottom: "0px", marginLeft: "500px", marginRight: "500px", width: "50%", columnWidth: "180px", border: "solid" }}>
           <thead>
