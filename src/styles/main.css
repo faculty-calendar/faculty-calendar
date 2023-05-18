@@ -17,7 +17,7 @@ header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 80px;
+    height: 70px;
     padding: 0 2rem;
     background-color: var(--mainColor) !important;
     color: var(--textColor);
@@ -31,7 +31,8 @@ header{
     border-radius: 5px;
     cursor: pointer;
     margin-left: auto;
-    font-size: 20px;
+    font-size: 18px;
+    top: 25px;
   }
   
 nav a{

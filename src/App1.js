@@ -6,7 +6,7 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, auth } from "./firebase";
 import "./App1.css";
 import Navbar from "./components/Navbar";
 import { createEvents } from "ics";
@@ -24,6 +24,7 @@ const localizer = dateFnsLocalizer({
 
 function App({ userId }) {
   const [allEvents, setAllEvents] = useState([]);
+  const user = auth.currentUser;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -129,9 +130,8 @@ function App({ userId }) {
       style={{ backgroundColor: "#F8F4E3", height: "100%", minHeight: "100vh" }}
     >
       <React.Fragment>
-        <Navbar onExport={handleExport} />
+        <Navbar user={user} onExport={handleExport} />
       </React.Fragment>
-      <h1 style={{ textAlign: "center" }}>Welcome - {userId}</h1>
 
       <div className="calendar-container">
         <div className="calendar" style={{ marginTop: "20px", merginLeft: "100px" }}>
