@@ -17,7 +17,7 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
     endTime: null,
     color: '',
   });
-  const [allEvents, setAllEvents] = useState([]);
+  const [ setAllEvents] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false); // Add state variable for isUpdating
 
   useEffect(() => {
