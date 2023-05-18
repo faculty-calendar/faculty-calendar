@@ -1,0 +1,47 @@
+.new-event {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row {
+  margin-bottom: 25px;
+}
+
+.form-label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  display: block;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.form-input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.form-input:hover {
+  border-color: #1976d2;
+  background-color: #f2f2f2;
+  transition: all 0.3s ease;
+}
+
+.select-custom {
+  appearance: none;
+}
+
+.mui-button {
+  background-color: #1976d2;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}

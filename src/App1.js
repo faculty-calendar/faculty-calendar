@@ -4,7 +4,6 @@ import startOfWeek from "date-fns/startOfWeek";
 import React, { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase";
@@ -51,54 +50,6 @@ function App({ userId }) {
       fetchData();
     }
   }, [userId]);
-  
-  function handleAddEvent() {
-    const { title, startDate, startTime, endDate, endTime, color } = newEvent;
-  
-    // Check if any of the date or time values are null
-    if (!startDate || !startTime || !endDate || !endTime) {
-      console.error("Invalid date or time values");
-      return;
-    }
-  
-    // Combine the date and time values into valid date objects
-    const startDateTime = new Date(startDate);
-    startDateTime.setHours(startTime.getHours());
-    startDateTime.setMinutes(startTime.getMinutes());
-  
-    const endDateTime = new Date(endDate);
-    endDateTime.setHours(endTime.getHours());
-    endDateTime.setMinutes(endTime.getMinutes());
-  
-    const newEventObject = {
-      title,
-      start: startDateTime.toISOString(),
-      end: endDateTime.toISOString(),
-      color,
-      userId,
-      startTime: startTime.toISOString(),
-      endTime: endTime.toISOString(),
-    };
-  
-    addDoc(collection(db, "events"), newEventObject)
-      .then(() => {
-        // Update the allEvents state with the new event
-        setAllEvents([...allEvents, newEventObject]);
-  
-        // Reset the newEvent state
-        setNewEvent({
-          title: "",
-          startDate: null,
-          startTime: null,
-          endDate: null,
-          endTime: null,
-          color: "",
-        });
-      })
-      .catch((error) => {
-        console.error("Error adding document: ", error);
-      });
-  }
 
   const handleRemoveEvent = (event) => {
     const r = window.confirm("Would you like to remove this event?");
@@ -222,119 +173,6 @@ function App({ userId }) {
             }}
           />
         </div>
-
-      
-      
-        
-        <div className="new-event" style={{borderRadius: "30px", marginTop: "20px", boxShadow: '9px 10px 11px 10px rgba(238, 230, 207, 1)'}}>
-  <h2 style={{color:"black", marginTop: "20px"}}>Add New Event</h2>
-  
-  <div >
-    <div className="form-row">
-      <label htmlFor="bc" className="form-label" style={{fontSize:"20px"}}>Event Title:</label><br/>
-      <input
-        type="text"
-        placeholder="Add Title"
-        className="form-input"
-        value={newEvent.title}
-        onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-        id="bc"
-      />
-    </div>
-    
-
-    <div className="form-row">
-      <label htmlFor="datepicker" className="form-label" style={{fontSize:"20px"}}>Start Date:</label>
-      <div className="form-input">
-      
-        <DatePicker
-          id="datepicker"
-          placeholderText="Start Date"
-          selected={newEvent.startDate}
-          onChange={(date) => setNewEvent({ ...newEvent, startDate: date })}
-        />
-      </div>
-    </div>
-
-    <div className="form-row">
-      <label htmlFor="stime" className="form-label" style={{fontSize:"20px"}}>Start Time:</label>
-      <div className="form-input">
-        <DatePicker
-          id="stime"
-          placeholderText="Start Time"
-          selected={newEvent.startTime}
-          onChange={(time) => {
-            const newTime = new Date();
-            newTime.setHours(time.getHours());
-            newTime.setMinutes(time.getMinutes());
-            setNewEvent({ ...newEvent, startTime: newTime });
-          }}
-          showTimeSelect
-          showTimeSelectOnly
-          timeIntervals={15}
-          timeCaption="Time"
-          dateFormat="h:mm aa"
-        />
-      </div>
-    </div>
-
-    <div className="form-row">
-      <label htmlFor="edate" className="form-label" style={{fontSize:"20px"}}>End Date:</label>
-      <div className="form-input">
-        <DatePicker
-          id="edate"
-          placeholderText="End Date"
-          selected={newEvent.endDate}
-          onChange={(date) => setNewEvent({ ...newEvent, endDate: date })}
-        />
-      </div>
-    </div>
-
-    <div className="form-row">
-      <label htmlFor="etime" className="form-label" style={{fontSize:"20px"}}>End Time:</label>
-      <div className="form-input">
-        <DatePicker
-          id="etime"
-          placeholderText="End Time"
-          selected={newEvent.endTime}
-          onChange={(time) => {
-            const newTime = new Date();
-            newTime.setHours(time.getHours());
-            newTime.setMinutes(time.getMinutes());
-            setNewEvent({ ...newEvent, endTime: newTime });
-          }}
-          showTimeSelect
-          showTimeSelectOnly
-          timeIntervals={15}
-          timeCaption="Time"
-          dateFormat="h:mm aa"
-        />
-      </div>
-    </div>
-
-    <div className="form-row">
-      <label htmlFor="etype" className="form-label" style={{fontSize:"20px"}}>Event type:</label>
-      <div className="form-input">
-        <select
-          id="etype"
-          value={newEvent.color}
-          onChange={(e) => setNewEvent({ ...newEvent, color: e.target.value })}
-        >
-          <option value="">Event type</option>
-          <option value="#B94747">Important</option>
-          <option value="#44BC44">Personal</option>
-          <option value="#6656D3">Class related</option>
-        </select>
-      </div>
-    </div>
-
-    <div className="form-row">
-      <button style={{ marginTop: "20px" , marginBottom:"40px",color:"white"}} onClick={handleAddEvent}>
-        Add Event
-      </button>
-    </div>
-  </div>
-  </div>
       
   </div>
   <div className="events-list" >
