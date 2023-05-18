@@ -23,8 +23,22 @@ function Navbar({ user, onExport }) {
   return (
     <div>
       <header>
-      <div className="welcome" style={{ marginLeft: '0px', fontSize: 18 }} >Welcome, {user?.displayName}</div>
         <nav ref={navRef}>
+          <div className="logo-container">
+            <img
+              src="https://admissionsinchennai.in/admissions/wp-content/uploads/2016/10/Amrita-University-Logo-263x300.png"
+              alt="Logo"
+              className="logo-image"
+            />
+            <div className="welcome-user">
+              <img
+                src={user?.photoURL}
+                alt="User Avatar"
+                className="user-avatar"
+              />
+              <span className="welcome-text">Welcome, {user?.displayName}</span>
+            </div>
+          </div>
           <button className="export-btn" style={{ fontSize: 18, marginRight: '100px', position: 'absolute', right: 0, top: '15px' }} onClick={onExport}>
             Export Calendar
           </button>

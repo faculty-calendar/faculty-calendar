@@ -48,6 +48,13 @@ function Signup() {
   return (
     <div className={styles.container}>
       <div className={styles.innerBox}>
+        {/* Display the image */}
+        <img
+          src="https://admissionsinchennai.in/admissions/wp-content/uploads/2016/10/Amrita-University-Logo-263x300.png"
+          alt="Logo"
+          className={styles.logo}
+        />
+
         <h1 className={styles.heading}>Signup</h1>
 
         <InputControl

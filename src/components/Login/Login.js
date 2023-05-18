@@ -6,7 +6,7 @@ import { auth } from "../../firebase";
 
 import styles from "./Login.module.css";
 
-function Login() {
+const Login = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState({
     email: "",
@@ -48,9 +48,13 @@ function Login() {
       });
   };
 
+  const logoImage = "https://admissionsinchennai.in/admissions/wp-content/uploads/2016/10/Amrita-University-Logo-263x300.png";
+
   return (
     <div className={styles.container}>
       <div className={styles.innerBox}>
+        <img className={styles.logo} src={logoImage} alt="Logo" />
+        
         <h1 className={styles.heading}>Login</h1>
 
         <InputControl
@@ -72,31 +76,31 @@ function Login() {
           {errorMsg && <p className={styles.error}>{errorMsg}</p>}
          
           <button disabled={submitButtonDisabled} onClick={handleSubmission}>
-        Login
-      </button>
-      <p>
-        Forgot your password?{" "}
-        <span>
-          <Link to="/forgot-password">Reset it</Link>
-        </span>
-      </p>
-      <p>
-        Don't have an account?{" "}
-        <span>
-          <Link to="/signup">Sign up</Link>
-        </span>
-      </p>
-      <p>
-        <span>
-          <button disabled={submitButtonDisabled} onClick={handleGoogleSignIn}>
-            Sign in with Google
+            Login
           </button>
-        </span>
-      </p>
+          <p>
+            Forgot your password?{" "}
+            <span>
+              <Link to="/forgot-password">Reset it</Link>
+            </span>
+          </p>
+          <p>
+            Don't have an account?{" "}
+            <span>
+              <Link to="/signup">Sign up</Link>
+            </span>
+          </p>
+          <p>
+            <span>
+              <button disabled={submitButtonDisabled} onClick={handleGoogleSignIn}>
+                Sign in with Google
+              </button>
+            </span>
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-);
-}
+  );
+};
 
 export default Login;

@@ -31,6 +31,13 @@ function ForgotPassword() {
   return (
     <div className={styles.container}>
       <div className={styles.innerBox}>
+        {/* Display the image */}
+        <img
+          src="https://admissionsinchennai.in/admissions/wp-content/uploads/2016/10/Amrita-University-Logo-263x300.png"
+          alt="Logo"
+          className={styles.logo}
+        />
+
         <h1 className={styles.heading}>Forgot Password</h1>
         {message && <div className={styles.message}>{message}</div>}
         <form onSubmit={handleResetPassword}>
