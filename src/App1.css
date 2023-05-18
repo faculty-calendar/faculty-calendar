@@ -4,25 +4,24 @@
 
 .calendar-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; /* Align items to the left side */
   align-items: flex-start;
   margin-top: 20px;
 }
 
 .calendar {
-  width: 60%;
+  width: 100%;
 }
 
-
-ul {
-  list-style: none;
-  padding-left: 0;
+.events-list {
+  margin-top: 20px;
+  margin-left: 100px; /* Adjust the margin-left according to your preference */
+  width: 30%; /* Adjust the width according to your preference */
 }
 
 table {
   border-collapse: collapse;
-  width: 100%;
-  margin-top: 20px;
+  width: 1000%;
   margin-bottom: 20px;
 }
 
@@ -47,52 +46,4 @@ tr:nth-child(even) {
 
 tr:hover {
   background-color: #ddd;
-}
-
-.welcome {
-  text-align: left;
-  margin-left: 450px;
-}
-
-.new-event h2 {
-  margin-bottom: 10px;
-}
-
-.error-message {
-  color: #ff0000;
-  margin-bottom: 10px;
-}
-
-
-.event-type-container {
-  margin-bottom: 10px;
-}
-
-button {
-  margin-top: 10px;
-  background-color: white;
-  color: #fff;
-  border: solid black;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.events-list {
-  margin-top: 20px;
-  margin-bottom: 0px;
-  justify-content: center;
-  align-items: center;
-  
-}
-
-
-td {
-  text-align: center;
-  border: 1px solid black;
-  background-color:  #F9E8DC;
-}
-
-th {
-  text-align: center;
-  border: 1px solid black;
 }

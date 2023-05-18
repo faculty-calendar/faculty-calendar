@@ -11,9 +11,12 @@ import "./App1.css";
 import Navbar from "./components/Navbar";
 import { createEvents } from "ics";
 import { doc, deleteDoc } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
+
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
 };
+
 const localizer = dateFnsLocalizer({
   format,
   parse,
@@ -27,21 +30,19 @@ function App({ userId }) {
   const user = auth.currentUser;
 
   useEffect(() => {
-    const fetchData = async () => {
-      const userEventsCollection = collection(db, "events");
-      const querySnapshot = await getDocs(
-        query(userEventsCollection, where("userId", "==", userId))
-      );
-      const fetchedEvents = querySnapshot.docs.map((doc) => ({
+    const userEventsCollection = collection(db, "events");
+    const querySnapshot = query(userEventsCollection, where("userId", "==", userId));
+    const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
+      const fetchedEvents = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setAllEvents(fetchedEvents);
-    };
+    });
 
-    if (userId) {
-      fetchData();
-    }
+    return () => {
+      unsubscribe(); // Unsubscribe from the snapshot listener when the component unmounts
+    };
   }, [userId]);
 
   const handleRemoveEvent = (event) => {
@@ -125,28 +126,24 @@ function App({ userId }) {
   }
 
   return (
-    <div
-      className="App"
-      style={{ backgroundColor: "#F8F4E3", height: "100%", minHeight: "100vh" }}
-    >
+    <div className="App" style={{ backgroundColor: "#F8F4E3", height: "100%", minHeight: "100vh" }}>
       <React.Fragment>
         <Navbar user={user} onExport={handleExport} />
       </React.Fragment>
 
       <div className="calendar-container">
-        <div className="calendar" style={{ marginTop: "20px", merginLeft: "100px" }}>
+        <div className="calendar" style={{ marginTop: "20px", marginRight: "20px", width: "60%" }}>
           <Calendar
             localizer={localizer}
             events={allEvents}
             startAccessor={(event) => new Date(event.start)}
             endAccessor={(event) => new Date(event.end)}
             style={{
-              height: 500,
+              height: 550,
               backgroundColor: "white",
-              padding: "20px 20px 20px 20px",
-              marginLeft: "20px",
-              boxShadow: '9px 10px 11px 10px rgba(238, 230, 207,1)',
-              borderRadius: "30px",
+              padding: "20px",
+              boxShadow: "9px 10px 11px 10px rgba(238, 230, 207,1)",
+              borderRadius: "50px",
             }}
             eventPropGetter={(event) => ({
               className: event.className,
@@ -168,42 +165,41 @@ function App({ userId }) {
             }}
           />
         </div>
-        
-      </div>
-      <div className="events-list">
-        <h2>Events</h2>
-        <table style={{ marginBottom: "0px", marginLeft: "500px", marginRight: "500px", width: "50%", columnWidth: "180px", border: "solid" }}>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allEvents.map((event) => {
-              let formattedStart = "";
-              let formattedEnd = "";
+        <div className="events-list">
+          <h2>Events</h2>
+          <table style={{ marginBottom: "10px", marginRight: "20px", width: "90%", columnWidth: "180px", border: "solid" }}>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allEvents.map((event) => {
+                let formattedStart = "";
+                let formattedEnd = "";
 
-              try {
-                const parsedStart = parseISO(event.start);
-                const parsedEnd = parseISO(event.end);
-                formattedStart = format(parsedStart, "yyyy-MM-dd HH:mm");
-                formattedEnd = format(parsedEnd, "yyyy-MM-dd HH:mm");
-              } catch (error) {
-                console.error("Error parsing time:", error);
-              }
+                try {
+                  const parsedStart = parseISO(event.start);
+                  const parsedEnd = parseISO(event.end);
+                  formattedStart = format(parsedStart, "yyyy-MM-dd HH:mm");
+                  formattedEnd = format(parsedEnd, "yyyy-MM-dd HH:mm");
+                } catch (error) {
+                  console.error("Error parsing time:", error);
+                }
 
-              return (
-                <tr key={event.id}>
-                  <td>{event.title}</td>
-                  <td>{formattedStart ? formattedStart : "Invalid start time"}</td>
-                  <td>{formattedEnd ? formattedEnd : "Invalid end time"}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                return (
+                  <tr key={event.id}>
+                    <td>{event.title}</td>
+                    <td>{formattedStart ? formattedStart : "Invalid start time"}</td>
+                    <td>{formattedEnd ? formattedEnd : "Invalid end time"}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

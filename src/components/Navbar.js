@@ -25,10 +25,10 @@ function Navbar({ user, onExport }) {
       <header>
       <div className="welcome" style={{ marginLeft: '0px', fontSize: 18 }} >Welcome, {user?.displayName}</div>
         <nav ref={navRef}>
-          <button className="export-btn" onClick={onExport}>
+          <button className="export-btn" style={{ fontSize: 18, marginRight: '100px', position: 'absolute', right: 0, top: '15px' }} onClick={onExport}>
             Export Calendar
           </button>
-          <button className="export-btn" onClick={handleAddEventClick}>
+          <button className="export-btn" style={{ fontSize: 18, marginRight: '240px', position: 'absolute', right: 0, top: '15px' }} onClick={handleAddEventClick}>
             Add Event
           </button>
           <a href="/#" style={{ fontSize: 18, marginRight: '50px', position: 'absolute', right: 0, top: '25px' }} onClick={() => auth.signOut()}>Logout</a>
