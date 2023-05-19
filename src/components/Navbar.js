@@ -23,7 +23,7 @@ function Navbar({ user, onExport }) {
   return (
     <div>
       <header>
-      <div className="welcome" style={{ marginLeft: '0px', fontSize: 18 }} >Welcome, {user?.displayName}</div>
+      <div className="welcome" style={{ marginLeft: '0px', fontSize: 18 }} >Welcome {user?.displayName}</div>
         <nav ref={navRef}>
           <button className="export-btn" style={{ fontSize: 18, marginRight: '100px', position: 'absolute', right: 0, top: '15px' }} onClick={onExport}>
             Export Calendar

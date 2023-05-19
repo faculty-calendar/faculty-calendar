@@ -16,6 +16,7 @@ import HandleDrawer from "./components/Drawer/HandleDrawer"; // Add import for H
 import { Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper} from "@mui/material";
 import {Dialog,DialogActions,DialogContent,DialogContentText, DialogTitle,Button } from "@mui/material"; // Add imports for Material-UI Dialog and Button components
 import { Select, MenuItem } from "@mui/material";
+import Footer from "./components/footer";
 
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
@@ -256,6 +257,7 @@ function App() {
         </Table>
         </TableContainer>
       </div>
+      <Footer />
     </div>
   );
 }

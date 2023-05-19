@@ -15,7 +15,7 @@ function Home(props) {
       
   <div style={{ justifyContent: 'center', display: 'flex', height: '550px', width: '650px', boxShadow: '9px 10px 11px 10px rgba(143,0,245)', paddingTop: "30px", borderRadius: "60px", backgroundColor: "white", position:"relative" }}>
     <div></div>
-    <span><br /><br /><AnimatedText text="Faculty Calendar Management System " /></span>
+    <span><br /><br /><AnimatedText text="Faculty Calendar Scheduler System " /></span>
     
     </div>
     
