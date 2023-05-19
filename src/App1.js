@@ -13,14 +13,9 @@ import { createEvents } from "ics";
 import { doc, deleteDoc } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
 import HandleDrawer from "./components/Drawer/HandleDrawer"; // Add import for HandleDrawer component
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-} from "@mui/material"; // Add imports for Material-UI Dialog and Button components
+import { Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper} from "@mui/material";
+import {Dialog,DialogActions,DialogContent,DialogContentText, DialogTitle,Button } from "@mui/material"; // Add imports for Material-UI Dialog and Button components
+import { Select, MenuItem } from "@mui/material";
 
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
@@ -35,6 +30,9 @@ const localizer = dateFnsLocalizer({
 });
 
 function App() {
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [filterText] = useState("")
+  const [selectedEventType, setSelectedEventType] = useState("");
   const userId = auth.currentUser ? auth.currentUser.uid : null;
   const [allEvents, setAllEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null); // Add state variable for selected event
@@ -147,7 +145,7 @@ function App() {
       </React.Fragment>
 
       <div className="calendar-container">
-        <div className="calendar" style={{ marginTop: "20px", marginRight: "20px", width: "60%" }}>
+        <div className="calendar" style={{ marginTop: "20px", marginLeft: "20px", width: "60%" }}>
           <Calendar
             localizer={localizer}
             events={allEvents}
@@ -194,41 +192,69 @@ function App() {
        </Dialog>
 
        <HandleDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} selectedEvent={selectedEvent} userId={userId} />
-       <div className="events-list">
-        <h2>Events</h2>
-        <table style={{ marginBottom: "10px", marginRight: "20px", width: "90%", columnWidth: "180px", border: "solid" }}>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allEvents.map((event) => {
-              let formattedStart = "";
-              let formattedEnd = "";
+       <TableContainer component={Paper} style={{ maxWidth: 500, marginTop: 23, marginLeft: 40,  backgroundColor: "white", padding: "20px", boxShadow: "9px 10px 11px 10px rgba(238, 230, 207,1)",borderRadius: "50px",}}>
+        <Table>
+        <TableHead>
+        <TableRow style={{ height: -100 }} >
+        <TableCell colSpan={3} style={{ backgroundColor: 'white' }}>
+        <Button style={{ height: 1 }} onClick={() => setIsFilterVisible(!isFilterVisible)}  >Filter</Button>
+        {isFilterVisible && (
+        <Select
+        value={selectedEventType}
+        onChange={(event) => setSelectedEventType(event.target.value)}
+        MenuProps={{
+        PaperProps: {
+        style: {minWidth: 200,},},}}
+        >
+        <MenuItem value="">All</MenuItem>
+        <MenuItem value="#B94747">Important</MenuItem>
+        <MenuItem value="#44BC44">Personal</MenuItem>
+        <MenuItem value="#6656D3">Class related</MenuItem>
+        </Select>
+        )}
+        </TableCell>
+        </TableRow>
+        <TableRow>
+        <TableCell>Title</TableCell>
+        <TableCell>Start Date</TableCell>
+        <TableCell>End Date</TableCell>
+        </TableRow>
+        </TableHead>
+        <TableBody>
+        {allEvents
+        .filter(
+        (event) =>
+        event.title.toLowerCase().includes(filterText.toLowerCase()) &&
+        (!selectedEventType || event.color === selectedEventType)
+        )
+        .map((event) => {
+        let formattedStart = "";
+        let formattedEnd = "";
 
-                try {
-                  const parsedStart = parseISO(event.start);
-                  const parsedEnd = parseISO(event.end);
-                  formattedStart = format(parsedStart, "yyyy-MM-dd HH:mm");
-                  formattedEnd = format(parsedEnd, "yyyy-MM-dd HH:mm");
-                } catch (error) {
-                  console.error("Error parsing time:", error);
-                }
+        try {
+        const parsedStart = parseISO(event.start);
+        const parsedEnd = parseISO(event.end);
+        formattedStart = format(parsedStart, "dd-MM-yyyy HH:mm");
+        formattedEnd = format(parsedEnd, "dd-MM-yyyy HH:mm");
+        } catch (error) {
+        console.error("Error parsing time:", error);
+        }
 
-                return (
-                  <tr key={event.id}>
-                    <td>{event.title}</td>
-                    <td>{formattedStart ? formattedStart : "Invalid start time"}</td>
-                    <td>{formattedEnd ? formattedEnd : "Invalid end time"}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        return (
+        <TableRow key={event.id}>
+        <TableCell>{event.title}</TableCell>
+        <TableCell>
+        {formattedStart ? formattedStart : "Invalid start time"}
+        </TableCell>
+        <TableCell>
+        {formattedEnd ? formattedEnd : "Invalid end time"}
+        </TableCell>
+        </TableRow>
+        );
+        })}
+        </TableBody>
+        </Table>
+        </TableContainer>
       </div>
     </div>
   );
