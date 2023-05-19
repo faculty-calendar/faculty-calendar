@@ -6,7 +6,8 @@
   display: flex;
   justify-content: flex-start; /* Align items to the left side */
   align-items: flex-start;
-  margin-top: 20px;
+  margin-top: 10px;
+  padding-bottom: 30px;
 }
 
 .calendar {

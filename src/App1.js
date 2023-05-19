@@ -12,7 +12,7 @@ import Navbar from "./components/Navbar";
 import { createEvents } from "ics";
 import { doc, deleteDoc } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
-import HandleDrawer from "./components/Drawer/HandleDrawer"; // Add import for HandleDrawer component
+import HandleDrawer from "./components/Drawer/HandleDrawer";
 import {
   Dialog,
   DialogActions,
@@ -20,7 +20,8 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
-} from "@mui/material"; // Add imports for Material-UI Dialog and Button components
+} from "@mui/material";
+import Footer from "./components/footer"; // Add import for the Footer component
 
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
@@ -37,9 +38,9 @@ const localizer = dateFnsLocalizer({
 function App() {
   const userId = auth.currentUser ? auth.currentUser.uid : null;
   const [allEvents, setAllEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null); // Add state variable for selected event
-  const [isDialogOpen, setIsDialogOpen] = useState(false); // Add state variable for dialog open state
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Add state variable for drawer open state
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const user = auth.currentUser;
 
   useEffect(() => {
@@ -54,30 +55,28 @@ function App() {
     });
 
     return () => {
-      unsubscribe(); // Unsubscribe from the snapshot listener when the component unmounts
+      unsubscribe();
     };
   }, [userId]);
 
   const handleRemoveEvent = (event) => {
     const r = window.confirm("Would you like to remove this event?");
-  
+
     if (r === true) {
       deleteDoc(doc(db, "events", event.id))
         .then(() => {
           const updatedEvents = allEvents.filter((e) => e.id !== event.id);
           setAllEvents(updatedEvents);
-          setIsDialogOpen(false); // Add this line to close the dialog
+          setIsDialogOpen(false);
         })
         .catch((error) => {
           console.error("Error removing event:", error);
         });
     }
   };
-  
 
   async function handleExport() {
     console.log("handleExport called");
-    // Fetch events for logged-in user from database
     const userEventsCollection = collection(db, "events");
     const querySnapshot = await getDocs(
       query(userEventsCollection, where("userId", "==", userId))
@@ -88,11 +87,9 @@ function App() {
     }));
 
     const events = fetchedEvents.map((event) => {
-      // Parse start and end date strings into Date objects
       const startDate = parseISO(event.start);
       const endDate = parseISO(event.end);
 
-      // Extract date and time components from Date objects
       const startArray = [
         startDate.getFullYear(),
         startDate.getMonth() + 1,
@@ -114,9 +111,8 @@ function App() {
         end: endArray,
       };
     });
-    // Log the values of the event objects
+
     console.log(events);
-    // Generate iCalendar file for download
     const { error, value } = createEvents(events);
 
     if (error) {
@@ -126,17 +122,14 @@ function App() {
 
     const fileContent = value;
 
-    // Create a Blob with the file content
     const blob = new Blob([fileContent], {
       type: "text/calendar;charset=utf-8",
     });
 
-    // Create a download link element
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "calendar.ics";
 
-    // Trigger a click event on the link to start the download
     link.click();
   }
 
@@ -167,47 +160,49 @@ function App() {
               },
             })}
             onSelectEvent={(event) => {
-              setSelectedEvent(event); // Set the selected event when an event is clicked
-              setIsDialogOpen(true); // Open the dialog when an event is clicked
+              setSelectedEvent(event);
+              setIsDialogOpen(true);
             }}
           />
         </div>
-      
-       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-         <DialogTitle>Event Options</DialogTitle>
-         <DialogContent>
-           <DialogContentText>
-             Would you like to remove or update this event?
-           </DialogContentText>
-         </DialogContent>
-         <DialogActions>
-           <Button onClick={() => handleRemoveEvent(selectedEvent)}>
-             Remove Event
-           </Button>
-           <Button onClick={() => {
-             setIsDialogOpen(false);
-             setIsDrawerOpen(true);
-           }}>
-             Update Event
-           </Button>
-         </DialogActions>
-       </Dialog>
 
-       <HandleDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} selectedEvent={selectedEvent} userId={userId} />
-       <div className="events-list">
-        <h2>Events</h2>
-        <table style={{ marginBottom: "10px", marginRight: "20px", width: "90%", columnWidth: "180px", border: "solid" }}>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allEvents.map((event) => {
-              let formattedStart = "";
-              let formattedEnd = "";
+        <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+          <DialogTitle>Event Options</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Would you like to remove or update this event?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleRemoveEvent(selectedEvent)}>
+              Remove Event
+            </Button>
+            <Button
+              onClick={() => {
+                setIsDialogOpen(false);
+                setIsDrawerOpen(true);
+              }}
+            >
+              Update Event
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <HandleDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} selectedEvent={selectedEvent} userId={userId} />
+        <div className="events-list">
+          <h2>Events</h2>
+          <table style={{ marginBottom: "10px", marginRight: "20px", width: "90%", columnWidth: "180px", border: "solid" }}>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allEvents.map((event) => {
+                let formattedStart = "";
+                let formattedEnd = "";
 
                 try {
                   const parsedStart = parseISO(event.start);
@@ -230,6 +225,8 @@ function App() {
           </table>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }
