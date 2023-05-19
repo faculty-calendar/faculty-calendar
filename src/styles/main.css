@@ -85,7 +85,7 @@ header .nav-btn{
 footer {
   background-color: var(--mainColor);
   color: white;
-  padding: 20px;
+  /* padding: 20px; */
   text-align: center;
   font-size: 14px;
 }
