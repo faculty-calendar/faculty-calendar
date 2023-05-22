@@ -89,19 +89,3 @@ footer {
   text-align: center;
   font-size: 14px;
 }
-
-.avatar img {
-    width: 100px; /* Adjust the width as needed */
-    height: 100px; /* Adjust the height as needed */
-    border-radius: 50%;
-    object-fit: cover;
-    padding: 20px;
-  }
-  
-
-  .welcome {
-    font-size: 18px;
-    margin-left: '-200px'; /* Adjust the margin as needed */
-  }
-  
-  

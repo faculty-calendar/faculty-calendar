@@ -18,7 +18,6 @@ import {Dialog,DialogActions,DialogContent,DialogContentText, DialogTitle,Button
 import { Select, MenuItem } from "@mui/material";
 import Footer from "./components/footer";
 
-
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
 };
