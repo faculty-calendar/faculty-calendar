@@ -7,8 +7,8 @@ const Footer = () => {
     <footer>
       <p>© 2023 Your Website. All rights reserved.</p>
       <p>
-        Designed and developed by{" "}
-        <a href="https://www.example.com">Your Name</a>
+        View On Github{" "}
+        <a href="https://github.com/orgs/faculty-calendar/discussions">Click Here</a>
       </p>
     </footer>
   );
