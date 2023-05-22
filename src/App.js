@@ -7,6 +7,7 @@ import Signup from "./components/Signup/Signup";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import Calendar from "./App1";
 import { auth } from "./firebase";
+import Profile from "./components/Profile/Profile";
 
 import "./App.css";
 
@@ -41,6 +42,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/calendar" element={<Calendar />} />
+        <Route path="/Profile" element={<Profile />} />
       </Routes>
     </div>
   );

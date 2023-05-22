@@ -1,8 +1,11 @@
 import { useRef, useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import '../styles/main.css';
 import HandleDrawer from './Drawer/HandleDrawer.js';
-import { auth } from '../firebase'; // Update the path to match your file structure
+import { auth } from '../firebase';
+
+
 
 function Navbar({ user, onExport }) {
   const navRef = useRef();
@@ -17,13 +20,20 @@ function Navbar({ user, onExport }) {
     setDrawerOpen(true);
   };
 
-  // Get the user ID of the currently logged-in user
   const userId = auth.currentUser ? auth.currentUser.uid : null;
 
   return (
     <div>
       <header>
-      <div className="welcome" style={{ marginLeft: '0px', fontSize: 18 }} >Welcome {user?.displayName}</div>
+        <div className="avatar" style={{ marginLeft: '-10px', fontSize: 18, position: 'absolute', top: '-13px' }}>
+        <Link to="/Profile">
+        <img src="https://lh3.googleusercontent.com/-gS1H9KKPz44/AAAAAAAAAAI/AAAAAAAACzc/f3tTCaY2uRk/photo.jpg" alt="Avatar" />
+        </Link>
+
+        </div>
+        <div className="welcome" style={{ marginLeft: '80px', fontSize: 18, position: 'absolute', top: '25px' }}>
+          Welcome {user?.displayName}
+        </div>
         <nav ref={navRef}>
           <button className="export-btn" style={{ fontSize: 18, marginRight: '100px', position: 'absolute', right: 0, top: '13px' }} onClick={onExport}>
             Export Calendar
@@ -31,7 +41,7 @@ function Navbar({ user, onExport }) {
           <button className="export-btn" style={{ fontSize: 18, marginRight: '240px', position: 'absolute', right: 0, top: '13px' }} onClick={handleAddEventClick}>
             Add Event
           </button>
-          <a href="/#" style={{ fontSize: 18, marginRight: '50px', position: 'absolute', right: 0, top: '22px' }} onClick={() => auth.signOut()}>Logout</a>
+          <a href="/#" style={{ fontSize: 18, marginRight: '50px', position: 'absolute', right: 0, top: '23px' }} onClick={() => auth.signOut()}>Logout</a>
           <button className="nav-btn nav-close-btn" onClick={showNavbar}>
             <FaTimes />
           </button>
