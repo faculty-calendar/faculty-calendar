@@ -142,7 +142,7 @@ function App() {
   return (
     <div className="App" style={{ backgroundColor: "#F8F4E3", height: "100%", minHeight: "100vh" }}>
       <React.Fragment>
-        <Navbar user={user} onExport={handleExport} />
+        <Navbar user={user} onExport={handleExport} allEvents={allEvents} />
       </React.Fragment>
 
       <div className="calendar-container">
