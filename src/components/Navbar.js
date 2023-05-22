@@ -42,6 +42,8 @@ function Navbar({ user, onExport,allEvents }) {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+  const colors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
   return (
     <div>
@@ -66,7 +68,7 @@ function Navbar({ user, onExport,allEvents }) {
           <List>
           <ListItem>
             <ListItemIcon sx={{ minWidth: 'auto', marginRight: 1 }}>
-              <Avatar sx={{ width: 60, height: 60 }}>{user?.displayName?.[0]}</Avatar>
+            <Avatar sx={{ width: 60, height: 60, bgcolor: randomColor }}>{user?.displayName?.[0]}</Avatar>
             </ListItemIcon>
             <ListItemText primary={user?.displayName} />
           </ListItem>
