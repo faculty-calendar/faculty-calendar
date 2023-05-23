@@ -9,6 +9,7 @@ import { parseISO } from 'date-fns'; // Add import for parseISO function
 
 
 function HandleDrawer({ open, onClose, userId, selectedEvent }) {
+  const [errorMessage, setErrorMessage] = useState('');
   const [newEvent, setNewEvent] = useState({
     title: '',
     startDate: null,
@@ -36,16 +37,17 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
     }
   }, [userId]);
 
-  // Function to handle adding a new event
   const handleAddEvent = () => {
+    setErrorMessage('');
     const { title, startDate, startTime, endDate, endTime, color } = newEvent;
-
+    const currentDate = new Date();
+  
     // Check if any of the date or time values are null
     if (!startDate || !startTime || !endDate || !endTime) {
-      console.error('Invalid date or time values');
+      setErrorMessage('Please fill all the required fields');
       return;
     }
-
+  
     // Combine the date and time values into valid date objects
     const startDateTime = new Date(startDate);
     startDateTime.setHours(startTime.getHours());
@@ -55,6 +57,27 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
     endDateTime.setHours(endTime.getHours());
     endDateTime.setMinutes(endTime.getMinutes());
 
+  
+    // Check if start date is before current date
+    if (startDateTime.setHours(0,0,0,0) < currentDate.setHours(0,0,0,0)) {
+      setErrorMessage('Start date cannot be before current date');
+      return;
+    }
+
+  
+    // Check if end date is before start date
+    if (endDateTime < startDateTime) {
+      setErrorMessage('End date cannot be before start date');
+      return;
+    }
+  
+    // Check if end time is less than start time on the same day
+    if (startDate === endDate && endDateTime < startDateTime) {
+      setErrorMessage('End time cannot be less than start time on the same day');
+      return;
+    }
+
+  
     const newEventObject = {
       title,
       start: startDateTime.toISOString(),
@@ -87,16 +110,17 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
       });
   };
 
-  // Function to handle updating an existing event
   const handleUpdateEvent = () => {
+    setErrorMessage('');
     const { title, startDate, startTime, endDate, endTime, color } = newEvent;
-
+    const currentDate = new Date();
+  
     // Check if any of the date or time values are null
     if (!startDate || !startTime || !endDate || !endTime) {
-      console.error('Invalid date or time values');
+      setErrorMessage('Please fill all the required fields');
       return;
     }
-
+  
     // Combine the date and time values into valid date objects
     const startDateTime = new Date(startDate);
     startDateTime.setHours(startTime.getHours());
@@ -106,6 +130,26 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
     endDateTime.setHours(endTime.getHours());
     endDateTime.setMinutes(endTime.getMinutes());
 
+  
+    // Check if start date is before current date
+    if (startDateTime.setHours(0,0,0,0) < currentDate.setHours(0,0,0,0)) {
+      setErrorMessage('Start date cannot be before current date');
+      return;
+    }
+  
+    // Check if end date is before start date
+    if (endDateTime < startDateTime) {
+      setErrorMessage('End date cannot be before start date');
+      return;
+    }
+  
+    // Check if end time is less than start time on the same day
+    if (startDate === endDate && endDateTime < startDateTime) {
+      setErrorMessage('End time cannot be less than start time on the same day');
+      return;
+    }
+
+  
     const updatedEventObject = {
       title,
       start: startDateTime.toISOString(),
@@ -166,15 +210,24 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
 
   return (
     <div>
-      <Drawer anchor="right" open={open} onClose={onClose}>
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={() => {
+          setErrorMessage(''); // Reset error message
+          onClose();
+        }}
+      >
         <EventForm
           newEvent={newEvent}
           setNewEvent={setNewEvent}
           handleAddEvent={handleAddEvent}
           handleUpdateEvent={handleUpdateEvent}
           isUpdating={isUpdating} // Pass isUpdating prop to EventForm component
+          errorMessage={errorMessage}
         />
       </Drawer>
+
     </div>
   );
 }

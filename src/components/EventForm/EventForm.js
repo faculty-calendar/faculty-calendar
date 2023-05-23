@@ -6,7 +6,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import './EventForm.css';
 
-function EventForm({ newEvent, setNewEvent, handleAddEvent, handleUpdateEvent, isUpdating }) {
+function EventForm({ newEvent, setNewEvent, handleAddEvent, handleUpdateEvent, isUpdating, errorMessage }) {
   return (
     <div className="new-event" style={{ marginTop: '20px' }}>
       <h2 style={{ color: 'black', marginTop: '20px', marginBottom: '20px', fontSize: '24px' }}>
@@ -115,9 +115,10 @@ function EventForm({ newEvent, setNewEvent, handleAddEvent, handleUpdateEvent, i
           </Select>
         </div>
         <div className="form-row">
-          <Button variant="contained" onClick={isUpdating ? handleUpdateEvent : handleAddEvent}>
-            {isUpdating ? 'Update Event' : 'Add Event'}
-          </Button>
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        <Button variant="contained" onClick={isUpdating ? handleUpdateEvent : handleAddEvent}>
+        {isUpdating ? 'Update Event' : 'Add Event'}
+        </Button>
         </div>
       </div>
     </div>
