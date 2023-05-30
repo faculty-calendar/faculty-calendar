@@ -56,7 +56,9 @@ function App() {
       unsubscribe(); // Unsubscribe from the snapshot listener when the component unmounts
     };
   }, [userId]);
-
+  const handleNotifyEvent = (event) => {
+  // Logic for notifying the event
+};
   const handleRemoveEvent = (event) => {
     const r = window.confirm("Would you like to remove this event?");
   
@@ -172,25 +174,32 @@ function App() {
           />
         </div>
       
-       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-         <DialogTitle>Event Options</DialogTitle>
-         <DialogContent>
-           <DialogContentText>
-             Would you like to remove or update this event?
-           </DialogContentText>
-         </DialogContent>
-         <DialogActions>
-           <Button onClick={() => handleRemoveEvent(selectedEvent)}>
-             Remove Event
-           </Button>
-           <Button onClick={() => {
-             setIsDialogOpen(false);
-             setIsDrawerOpen(true);
-           }}>
-             Update Event
-           </Button>
-         </DialogActions>
-       </Dialog>
+        <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+  <DialogTitle>Event Options</DialogTitle>
+  <DialogContent>
+    <DialogContentText>
+      Would you like to remove or update this event?
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    {selectedEvent && (
+      <Button onClick={() => handleNotifyEvent(selectedEvent)}>
+        Notify Event
+      </Button>
+    )}
+    <Button onClick={() => handleRemoveEvent(selectedEvent)}>
+      Remove Event
+    </Button>
+    <Button onClick={() => {
+      setIsDialogOpen(false);
+      setIsDrawerOpen(true);
+    }}>
+      Update Event
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
 
        <HandleDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} selectedEvent={selectedEvent} userId={userId} />
        <TableContainer component={Paper} style={{ maxWidth: 500, marginTop: 23, marginLeft: 40,  backgroundColor: "white", padding: "20px", boxShadow: "9px 10px 11px 10px rgba(238, 230, 207,1)",borderRadius: "50px",}}>
