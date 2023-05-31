@@ -52,18 +52,18 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
     const startDateTime = new Date(startDate);
     startDateTime.setHours(startTime.getHours());
     startDateTime.setMinutes(startTime.getMinutes());
-
+  
     const endDateTime = new Date(endDate);
     endDateTime.setHours(endTime.getHours());
     endDateTime.setMinutes(endTime.getMinutes());
-
   
     // Check if start date is before current date
-    if (startDateTime.setHours(0,0,0,0) < currentDate.setHours(0,0,0,0)) {
+    const startDateTimeCopy = new Date(startDateTime);
+    const currentDateCopy = new Date(currentDate);
+    if (startDateTimeCopy.setHours(0,0,0,0) < currentDateCopy.setHours(0,0,0,0)) {
       setErrorMessage('Start date cannot be before current date');
       return;
     }
-
   
     // Check if end date is before start date
     if (endDateTime < startDateTime) {
@@ -76,7 +76,6 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
       setErrorMessage('End time cannot be less than start time on the same day');
       return;
     }
-
   
     const newEventObject = {
       title,
@@ -87,11 +86,11 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
     };
-
+  
     addDoc(collection(db, 'events'), newEventObject)
       .then((docRef) => {
         setAllEvents((prevAllEvents) => [...prevAllEvents, { ...newEventObject, id: docRef.id }]);
-
+  
         // Reset the newEvent state
         setNewEvent({
           title: '',
@@ -101,7 +100,7 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
           endTime: null,
           color: '',
         });
-
+  
         // Close the drawer
         onClose();
       })
@@ -109,6 +108,7 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
         console.error('Error adding document: ', error);
       });
   };
+  
 
   const handleUpdateEvent = () => {
     setErrorMessage('');

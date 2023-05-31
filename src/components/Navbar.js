@@ -16,7 +16,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import EventIcon from '@mui/icons-material/Event';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
-import { parseISO, isToday } from 'date-fns';
+import { parseISO, isToday,format} from 'date-fns';
 
 function Navbar({ user, onExport, allEvents }) {
   const navRef = useRef();
@@ -28,7 +28,6 @@ function Navbar({ user, onExport, allEvents }) {
     const eventStart = parseISO(event.start);
     return isToday(eventStart) && eventStart > now;
   });
-
   const showNavbar = () => {
     navRef.current.classList.toggle('responsive_nav');
   };
@@ -195,28 +194,26 @@ function Navbar({ user, onExport, allEvents }) {
       <HandleDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} userId={userId} />
 
       <Dialog open={openNotifications} onClose={handleNotificationsClose}>
-  <DialogTitle>Upcoming Notifications</DialogTitle>
-  <DialogContent>
-    <DialogContentText>
-    {upcomingEvents.length > 0 ? (
-  upcomingEvents.map((event) => (
-    <div key={event.id}>
-      <p>{event.title}</p>
-      <p>{event.start}</p>
-      <p>{event.time}</p>
-    </div>
-  ))
-) : (
-  <p>No events found</p>
-)}
-    </DialogContentText>
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleNotificationsClose} autoFocus>
-      Close
-    </Button>
-  </DialogActions>
-</Dialog>
+      <DialogTitle>Upcoming Notifications</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+        {upcomingEvents.length > 0 ? (
+        upcomingEvents.map((event) => (
+          <div key={event.id}>
+            <p>{event.title} is scheduled on {format(parseISO(event.start), 'hh:mm a')} today</p>
+          </div>
+        ))
+      ) : (
+        <p>No events found</p>
+      )}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleNotificationsClose} autoFocus>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
 
 
     </div>

@@ -198,9 +198,6 @@ function App() {
     </Button>
   </DialogActions>
 </Dialog>
-
-
-
        <HandleDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} selectedEvent={selectedEvent} userId={userId} />
        <TableContainer component={Paper} style={{ maxWidth: 500, marginTop: 23, marginLeft: 40,  backgroundColor: "white", padding: "20px", boxShadow: "9px 10px 11px 10px rgba(238, 230, 207,1)",borderRadius: "50px",}}>
         <Table>
