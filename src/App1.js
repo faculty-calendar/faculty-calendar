@@ -70,9 +70,6 @@ function App() {
     setFilteredEvents(filtered);
   }, [allEvents, filterText, selectedYear, selectedClass]);
 
-  const handleNotifyEvent = (event) => {
-    // Logic for notifying the event
-  };
 
   const handleRemoveEvent = (event) => {
     const r = window.confirm("Would you like to remove this event?");
@@ -189,11 +186,6 @@ function App() {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            {selectedEvent && (
-              <Button onClick={() => handleNotifyEvent(selectedEvent)}>
-                Notify Event
-              </Button>
-            )}
             <Button onClick={() => handleRemoveEvent(selectedEvent)}>
               Remove Event
             </Button>

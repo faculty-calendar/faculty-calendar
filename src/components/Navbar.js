@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import '../styles/main.css';
 import HandleDrawer from './Drawer/HandleDrawer.js';
 import { auth } from '../firebase'; // Update the path to match your file structure
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link } from 'react-router-dom';
+import { useCallback } from 'react';
 import Popover from '@mui/material/Popover';
 import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
@@ -16,7 +17,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import EventIcon from '@mui/icons-material/Event';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
-import { parseISO, isToday,format} from 'date-fns';
+import { parseISO, isToday, format } from 'date-fns';
 
 function Navbar({ user, onExport, allEvents }) {
   const navRef = useRef();
@@ -27,6 +28,11 @@ function Navbar({ user, onExport, allEvents }) {
   const upcomingEvents = allEvents.filter(event => {
     const eventStart = parseISO(event.start);
     return isToday(eventStart) && eventStart > now;
+  });
+  const [clearedNotifications, setClearedNotifications] = useState(() => {
+    // Retrieve cleared notifications from local storage on component mount
+    const storedClearedNotifications = localStorage.getItem('clearedNotifications');
+    return storedClearedNotifications ? JSON.parse(storedClearedNotifications) : [];
   });
   const showNavbar = () => {
     navRef.current.classList.toggle('responsive_nav');
@@ -52,9 +58,24 @@ function Navbar({ user, onExport, allEvents }) {
     setOpenNotifications(true);
   };
 
+  const openNotificationsDialog = useCallback(() => {
+    if (upcomingEvents.length > 0 && clearedNotifications.length !== upcomingEvents.length) {
+      setOpenNotifications(true);
+    }
+  }, [upcomingEvents, clearedNotifications]);
+
   const handleNotificationsClose = () => {
     setOpenNotifications(false);
   };
+
+  const handleClearNotifications = () => {
+    setClearedNotifications(upcomingEvents); // Clear notifications by setting clearedNotifications state to all upcomingEvents
+  };
+
+  useEffect(() => {
+    // Store cleared notifications in local storage whenever it changes
+    localStorage.setItem('clearedNotifications', JSON.stringify(clearedNotifications));
+  }, [clearedNotifications]);
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -77,6 +98,18 @@ function Navbar({ user, onExport, allEvents }) {
     '#FF5722',
   ];
   const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!openNotifications) {
+        openNotificationsDialog();
+      }
+    }, 12000); // 2 minutes in milliseconds
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [openNotifications, openNotificationsDialog]);
 
   return (
     <div>
@@ -194,28 +227,32 @@ function Navbar({ user, onExport, allEvents }) {
       <HandleDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} userId={userId} />
 
       <Dialog open={openNotifications} onClose={handleNotificationsClose}>
-      <DialogTitle>Upcoming Events</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-        {upcomingEvents.length > 0 ? (
-        upcomingEvents.map((event) => (
-          <div key={event.id}>
-            <p>{event.title} is scheduled on {format(parseISO(event.start), 'hh:mm a')} today</p>
-          </div>
-        ))
-      ) : (
-        <p>No events found</p>
-      )}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleNotificationsClose} autoFocus>
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
-
-
+        <DialogTitle>Upcoming Events</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {upcomingEvents.length > 0 ? (
+              clearedNotifications.length === upcomingEvents.length ? (
+                <p>No notifications</p>
+              ) : (
+                upcomingEvents.map((event) => (
+                  !clearedNotifications.includes(event) ? (
+                    <div key={event.id}>
+                      <p>{event.title} is scheduled on {format(parseISO(event.start), 'hh:mm a')} today</p>
+                    </div>
+                  ) : null
+                ))
+              )
+            ) : (
+              <p>There are no upcoming events</p>
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClearNotifications} autoFocus>
+            Clear all notifications
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
