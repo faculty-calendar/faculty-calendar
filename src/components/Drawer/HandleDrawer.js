@@ -7,17 +7,19 @@ import '../../App1.css';
 import { doc } from 'firebase/firestore'; // Add import for doc function
 import { parseISO } from 'date-fns'; // Add import for parseISO function
 
-
 function HandleDrawer({ open, onClose, userId, selectedEvent }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [newEvent, setNewEvent] = useState({
     title: '',
+    year: '', // Add the 'year' variable here
+    class: '',
     startDate: null,
     startTime: null,
     endDate: null,
     endTime: null,
     color: '',
   });
+
   const [ ,setAllEvents] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false); // Add state variable for isUpdating
 
@@ -39,7 +41,7 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
 
   const handleAddEvent = () => {
     setErrorMessage('');
-    const { title, startDate, startTime, endDate, endTime, color } = newEvent;
+    const { title, year, startDate, startTime, endDate, endTime, color } = newEvent; // Add 'year' to the destructured variables
     const currentDate = new Date();
   
     // Check if any of the date or time values are null
@@ -79,6 +81,8 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
   
     const newEventObject = {
       title,
+      year,
+      class: newEvent.class,
       start: startDateTime.toISOString(),
       end: endDateTime.toISOString(),
       color,
@@ -86,6 +90,7 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
     };
+    
   
     addDoc(collection(db, 'events'), newEventObject)
       .then((docRef) => {
@@ -112,7 +117,7 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
 
   const handleUpdateEvent = () => {
     setErrorMessage('');
-    const { title, startDate, startTime, endDate, endTime, color } = newEvent;
+    const { title,startDate, startTime, endDate, endTime, color } = newEvent; // Add 'year' to the destructured variables
     const currentDate = new Date();
   
     // Check if any of the date or time values are null
@@ -152,6 +157,8 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
   
     const updatedEventObject = {
       title,
+      year: newEvent.year, // Add 'year' field with the value from newEvent
+      class: newEvent.class,
       start: startDateTime.toISOString(),
       end: endDateTime.toISOString(),
       color,
@@ -159,6 +166,8 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
     };
+    
+    
 
     updateDoc(doc(db, 'events', selectedEvent.id), updatedEventObject)
       .then(() => {
@@ -223,9 +232,10 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
           setNewEvent={setNewEvent}
           handleAddEvent={handleAddEvent}
           handleUpdateEvent={handleUpdateEvent}
-          isUpdating={isUpdating} // Pass isUpdating prop to EventForm component
+          isUpdating={isUpdating}
           errorMessage={errorMessage}
         />
+
       </Drawer>
 
     </div>

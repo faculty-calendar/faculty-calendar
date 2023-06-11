@@ -194,7 +194,7 @@ function Navbar({ user, onExport, allEvents }) {
       <HandleDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} userId={userId} />
 
       <Dialog open={openNotifications} onClose={handleNotificationsClose}>
-      <DialogTitle>Upcoming Notifications</DialogTitle>
+      <DialogTitle>Upcoming Events</DialogTitle>
       <DialogContent>
         <DialogContentText>
         {upcomingEvents.length > 0 ? (
