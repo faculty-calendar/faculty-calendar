@@ -15,6 +15,8 @@ import ListItemText from '@mui/material/ListItemText';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import EventIcon from '@mui/icons-material/Event';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 import { parseISO, isToday, format } from 'date-fns';
@@ -226,8 +228,19 @@ function Navbar({ user, onExport, allEvents }) {
       </header>
       <HandleDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} userId={userId} />
 
-      <Dialog open={openNotifications} onClose={handleNotificationsClose}>
-        <DialogTitle>Upcoming Events</DialogTitle>
+      <Dialog open={openNotifications} onClose={handleNotificationsClose} PaperProps={{ sx: { overflowX: 'hidden' } }}>
+      <DialogTitle>
+    Upcoming Events
+    <IconButton
+      edge="end"
+      color="inherit"
+      onClick={handleNotificationsClose}
+      aria-label="close"
+      sx={{ position: 'absolute', top: 8, right: 8 }}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {upcomingEvents.length > 0 ? (
