@@ -66,16 +66,17 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
       setErrorMessage('Start date cannot be before current date');
       return;
     }
-  
-    // Check if end date is before start date
-    if (endDateTime < startDateTime) {
-      setErrorMessage('End date cannot be before start date');
-      return;
-    }
-  
+    // Check if start date is before current date
     // Check if end time is less than start time on the same day
     if (startDate === endDate && endDateTime < startDateTime) {
       setErrorMessage('End time cannot be less than start time on the same day');
+      return;
+    }
+  // Check if start date is before current date
+    // Check if end time is less than start time on the same day
+    // Check if end date is before start date
+    if (endDateTime < startDateTime) {
+      setErrorMessage('End date cannot be before start date');
       return;
     }
   

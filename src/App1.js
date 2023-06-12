@@ -113,15 +113,14 @@ function App() {
         endDate.getHours(),
         endDate.getMinutes(),
       ];
-
+    
       return {
         title: event.title,
         start: startArray,
         end: endArray,
-        year: event.year, // Add 'year' field
-        class: event.class, // Add 'class' field
       };
     });
+    
 
     console.log(events);
 
