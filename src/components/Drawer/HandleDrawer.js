@@ -118,47 +118,38 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
 
   const handleUpdateEvent = () => {
     setErrorMessage('');
-    const { title,startDate, startTime, endDate, endTime, color } = newEvent; // Add 'year' to the destructured variables
+    const { title, startDate, startTime, endDate, endTime, color } = newEvent;
     const currentDate = new Date();
   
-    // Check if any of the date or time values are null
     if (!startDate || !startTime || !endDate || !endTime) {
       setErrorMessage('Please fill all the required fields');
       return;
     }
   
-    // Combine the date and time values into valid date objects
     const startDateTime = new Date(startDate);
-    startDateTime.setHours(startTime.getHours());
-    startDateTime.setMinutes(startTime.getMinutes());
-
-    const endDateTime = new Date(endDate);
-    endDateTime.setHours(endTime.getHours());
-    endDateTime.setMinutes(endTime.getMinutes());
-
+    startDateTime.setHours(startTime.getHours(), startTime.getMinutes()); // Update the startDateTime to include the selected time
   
-    // Check if start date is before current date
-    if (startDateTime.setHours(0,0,0,0) < currentDate.setHours(0,0,0,0)) {
+    const endDateTime = new Date(endDate);
+    endDateTime.setHours(endTime.getHours(), endTime.getMinutes()); // Update the endDateTime to include the selected time
+  
+    if (startDateTime < currentDate) {
       setErrorMessage('Start date cannot be before current date');
       return;
     }
   
-    // Check if end date is before start date
     if (endDateTime < startDateTime) {
       setErrorMessage('End date cannot be before start date');
       return;
     }
   
-    // Check if end time is less than start time on the same day
-    if (startDate === endDate && endDateTime < startDateTime) {
+    if (startDate === endDate && endTime < startTime) {
       setErrorMessage('End time cannot be less than start time on the same day');
       return;
     }
-
   
     const updatedEventObject = {
       title,
-      year: newEvent.year, // Add 'year' field with the value from newEvent
+      year: newEvent.year,
       class: newEvent.class,
       start: startDateTime.toISOString(),
       end: endDateTime.toISOString(),
@@ -167,9 +158,7 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
     };
-    
-    
-
+  
     updateDoc(doc(db, 'events', selectedEvent.id), updatedEventObject)
       .then(() => {
         setAllEvents((prevAllEvents) =>
@@ -177,8 +166,7 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
             event.id === selectedEvent.id ? { ...updatedEventObject, id: selectedEvent.id } : event
           )
         );
-
-        // Reset the newEvent state
+  
         setNewEvent({
           title: '',
           startDate: null,
@@ -187,14 +175,14 @@ function HandleDrawer({ open, onClose, userId, selectedEvent }) {
           endTime: null,
           color: '',
         });
-
-        // Close the drawer
+  
         onClose();
       })
       .catch((error) => {
         console.error('Error updating document: ', error);
       });
   };
+  
 
   useEffect(() => {
     if (selectedEvent) {
