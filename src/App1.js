@@ -42,6 +42,7 @@ function App() {
   const [selectedClass, setSelectedClass] = useState("");
   const [filteredEvents, setFilteredEvents] = useState([]); // Add filtered events state
 
+
   const user = auth.currentUser;
 
   useEffect(() => {

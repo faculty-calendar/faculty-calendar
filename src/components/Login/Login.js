@@ -15,7 +15,9 @@ const Login = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
 
-  const handleSubmission = () => {
+  const handleSubmission = (e) => {
+    e.preventDefault();
+
     if (!values.email || !values.password) {
       setErrorMsg("Fill in all fields");
       return;
@@ -57,47 +59,49 @@ const Login = () => {
         
         <h1 className={styles.heading}>Login</h1>
 
-        <InputControl
-          label="Email"
-          type="email"
-          value={values.email}
-          onChange={(e) => setValues({ ...values, email: e.target.value })}
-          placeholder="Enter email address"
-        />
-        <InputControl
-          label="Password"
-          type="password"
-          value={values.password}
-          onChange={(e) => setValues({ ...values, password: e.target.value })}
-          placeholder="Enter password"
-        />
+        <form onSubmit={handleSubmission}>
+          <InputControl
+            label="Email"
+            type="email"
+            value={values.email}
+            onChange={(e) => setValues({ ...values, email: e.target.value })}
+            placeholder="Enter email address"
+          />
+          <InputControl
+            label="Password"
+            type="password"
+            value={values.password}
+            onChange={(e) => setValues({ ...values, password: e.target.value })}
+            placeholder="Enter password"
+          />
 
-        <div className={styles.footer}>
-          {errorMsg && <p className={styles.error}>{errorMsg}</p>}
-         
-          <button disabled={submitButtonDisabled} onClick={handleSubmission}>
-            Login
-          </button>
-          <p>
-            Forgot your password?{" "}
-            <span>
-              <Link to="/forgot-password">Reset it</Link>
-            </span>
-          </p>
-          <p>
-            Don't have an account?{" "}
-            <span>
-              <Link to="/signup">Sign up</Link>
-            </span>
-          </p>
-          <p>
-            <span>
-              <button disabled={submitButtonDisabled} onClick={handleGoogleSignIn}>
-                Sign in with Google
-              </button>
-            </span>
-          </p>
-        </div>
+          <div className={styles.footer}>
+            {errorMsg && <p className={styles.error}>{errorMsg}</p>}
+           
+            <button disabled={submitButtonDisabled} type="submit">
+              Login
+            </button>
+            <p>
+              Forgot your password?{" "}
+              <span>
+                <Link to="/forgot-password">Reset it</Link>
+              </span>
+            </p>
+            <p>
+              Don't have an account?{" "}
+              <span>
+                <Link to="/signup">Sign up</Link>
+              </span>
+            </p>
+            <p>
+              <span>
+                <button disabled={submitButtonDisabled} onClick={handleGoogleSignIn}>
+                  Sign in with Google
+                </button>
+              </span>
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   );
