@@ -106,7 +106,7 @@ function Navbar({ user, onExport, allEvents }) {
       if (!openNotifications) {
         openNotificationsDialog();
       }
-    }, 24000); // 2 minutes in milliseconds
+    }, 12000); // 2 minutes in milliseconds
 
     return () => {
       clearInterval(interval);
